@@ -2,7 +2,7 @@ import React from 'react';
 import TaskCard from './TaskCard';
 import { Layers } from 'lucide-react';
 
-const TaskList = ({ tasks, onToggleStatus, onEdit, onDelete, currentFilter }) => {
+const TaskList = ({ tasks, onToggleStatus, onEdit, onDelete, currentFilter, onToggleSubtask }) => {
   if (tasks.length === 0) {
     return (
       <div className="empty-state glass-panel">
@@ -26,6 +26,7 @@ const TaskList = ({ tasks, onToggleStatus, onEdit, onDelete, currentFilter }) =>
             onToggleStatus={onToggleStatus}
             onEdit={onEdit}
             onDelete={onDelete}
+            onToggleSubtask={onToggleSubtask}
           />
         </div>
       ))}
