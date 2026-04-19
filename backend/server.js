@@ -15,14 +15,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serverless DB Connection Middleware
-let isConnected = false;
 app.use(async (req, res, next) => {
-  if (process.env.VERCEL === '1' && !isConnected) {
+  if (process.env.VERCEL === '1') {
     try {
       if (mongoose.connection.readyState !== 1) {
-        await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 });
+        // Only use process.env.MONGO_URI directly if it exists, otherwise use fallback so mongoose.connect doesn't throw about invalid URI parameter
+        const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/tasktracker';
+        await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
       }
-      isConnected = true;
     } catch (err) {
       console.error('Serverless DB Connect Error:', err.message);
       return res.status(500).json({ 

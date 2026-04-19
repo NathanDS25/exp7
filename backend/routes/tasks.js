@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
     const saved = await task.save();
     res.status(201).json(saved);
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
     const tasks = await Task.find(filter).sort({ createdAt: -1 });
     res.json(tasks);
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -40,7 +40,7 @@ router.get('/:id', async (req, res) => {
     if (!task) return res.status(404).json({ message: 'Task not found.' });
     res.json(task);
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -58,7 +58,7 @@ router.put('/:id', async (req, res) => {
     if (!task) return res.status(404).json({ message: 'Task not found.' });
     res.json(task);
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -75,7 +75,7 @@ router.patch('/:id/subtasks/:subId', async (req, res) => {
     await task.save();
     res.json(task);
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -86,7 +86,7 @@ router.delete('/:id', async (req, res) => {
     if (!task) return res.status(404).json({ message: 'Task not found.' });
     res.json({ message: 'Task deleted successfully.', id: req.params.id });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
