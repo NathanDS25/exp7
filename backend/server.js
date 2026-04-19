@@ -55,9 +55,18 @@ async function startServer() {
     }
   }
 
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-  });
+  if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+    });
+  }
 }
 
-startServer();
+if (process.env.VERCEL !== '1') {
+  startServer();
+} else {
+  // On Vercel, simply connect and export the app
+  mongoose.connect(MONGO_URI).catch(err => console.warn(`MongoDB connection failed: ${err.message}`));
+}
+
+module.exports = app;
