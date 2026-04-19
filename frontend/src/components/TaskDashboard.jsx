@@ -1,12 +1,12 @@
 import React from 'react';
-import { CheckCircle, Clock, Layers, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Clock, Layers, AlertTriangle, BarChart2 } from 'lucide-react';
 
-const TaskDashboard = ({ tasks }) => {
-  const total = tasks.length;
-  const pending = tasks.filter(t => t.status === 'Pending').length;
+const TaskDashboard = ({ tasks, showAnalytics, onToggleAnalytics }) => {
+  const total      = tasks.length;
+  const pending    = tasks.filter(t => t.status === 'Pending').length;
   const inProgress = tasks.filter(t => t.status === 'In Progress').length;
-  const completed = tasks.filter(t => t.status === 'Completed').length;
-  const overdue = tasks.filter(t => {
+  const completed  = tasks.filter(t => t.status === 'Completed').length;
+  const overdue    = tasks.filter(t => {
     if (!t.deadline || t.status === 'Completed') return false;
     return new Date(t.deadline) < new Date();
   }).length;
@@ -49,7 +49,18 @@ const TaskDashboard = ({ tasks }) => {
         <div className="progress-section glass-panel">
           <div className="progress-header">
             <span className="progress-label">Overall Progress</span>
-            <span className="progress-pct">{completionPct}%</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span className="progress-pct">{completionPct}%</span>
+              <button
+                className={`analytics-toggle-btn ${showAnalytics ? 'active' : ''}`}
+                onClick={onToggleAnalytics}
+                title="Toggle analytics panel"
+                id="analytics-toggle-btn"
+              >
+                <BarChart2 size={13} />
+                Analytics
+              </button>
+            </div>
           </div>
           <div className="progress-bar-track">
             <div className="progress-bar-fill" style={{ width: `${completionPct}%` }} />

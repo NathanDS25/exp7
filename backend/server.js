@@ -34,15 +34,30 @@ app.use((err, req, res, next) => {
 });
 
 // ─── Database Connection & Server Start ───────────────────────
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
+async function startServer() {
+  try {
+    console.log(`⏳ Attempting to connect to MongoDB: ${MONGO_URI}`);
+    await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 });
     console.log('✅ Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ MongoDB connection failed:', err.message);
-    process.exit(1);
+  } catch (err) {
+    console.warn(`⚠️ Primary MongoDB connection failed (${err.message}).`);
+    console.log('🔄 Starting fallback in-memory MongoDB server...');
+    
+    try {
+      const { MongoMemoryServer } = require('mongodb-memory-server');
+      const mongoServer = await MongoMemoryServer.create();
+      const memUri = mongoServer.getUri();
+      await mongoose.connect(memUri);
+      console.log('✅ Connected to In-Memory MongoDB Fallback');
+    } catch (memErr) {
+      console.error('❌ Failed to start in-memory MongoDB:', memErr.message);
+      process.exit(1);
+    }
+  }
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
+}
+
+startServer();
