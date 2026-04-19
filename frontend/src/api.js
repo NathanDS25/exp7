@@ -1,4 +1,4 @@
-export const API_BASE = '/tasks';
+export const API_BASE = '/_/backend/tasks';
 
 export const fetchTasks = async (status = '') => {
   const url = status && status !== 'All' ? `${API_BASE}?status=${status}` : API_BASE;
