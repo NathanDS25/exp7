@@ -14,11 +14,28 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serverless DB Connection Middleware
+let isConnected = false;
+app.use(async (req, res, next) => {
+  if (process.env.VERCEL === '1' && !isConnected) {
+    try {
+      if (mongoose.connection.readyState !== 1) {
+        await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 });
+      }
+      isConnected = true;
+    } catch (err) {
+      console.error('Serverless DB Connect Error:', err.message);
+    }
+  }
+  next();
+});
+
 // ─── Routes ──────────────────────────────────────────────────
-app.use('/tasks', taskRoutes);
+// Support both local development (/tasks) and Vercel routing (/_/backend/tasks)
+app.use(['/tasks', '/_/backend/tasks'], taskRoutes);
 
 // Health check
-app.get('/', (req, res) => {
+app.get(['/', '/_/backend', '/_/backend/'], (req, res) => {
   res.json({ message: '🟢 Task Tracker API is running', status: 'ok' });
 });
 
@@ -64,9 +81,6 @@ async function startServer() {
 
 if (process.env.VERCEL !== '1') {
   startServer();
-} else {
-  // On Vercel, simply connect and export the app
-  mongoose.connect(MONGO_URI).catch(err => console.warn(`MongoDB connection failed: ${err.message}`));
 }
 
 module.exports = app;
