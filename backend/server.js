@@ -25,6 +25,9 @@ app.use(async (req, res, next) => {
       isConnected = true;
     } catch (err) {
       console.error('Serverless DB Connect Error:', err.message);
+      return res.status(500).json({ 
+        message: '🔴 Vercel cannot connect to MongoDB. Check your MONGO_URI and ensure Atlas Network Access allows 0.0.0.0/0' 
+      });
     }
   }
   next();
