@@ -20,7 +20,7 @@ app.use(async (req, res, next) => {
     try {
       if (mongoose.connection.readyState !== 1) {
         // Only use process.env.MONGO_URI directly if it exists, otherwise use fallback so mongoose.connect doesn't throw about invalid URI parameter
-        const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/tasktracker';
+        const uri = process.env.MONGO_URI || 'mongodb://nathanneildsouza2021_db_user:jZ5XfLgqQnT2TGkL@ac-dz5vap8-shard-00-00.m5uln0a.mongodb.net:27017,ac-dz5vap8-shard-00-01.m5uln0a.mongodb.net:27017,ac-dz5vap8-shard-00-02.m5uln0a.mongodb.net:27017/tasktracker?ssl=true&replicaSet=atlas-tof5v0-shard-0&authSource=admin&appName=Cluster2';
         await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
       }
     } catch (err) {
